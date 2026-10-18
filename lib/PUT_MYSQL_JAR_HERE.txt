@@ -1,0 +1,1 @@
+Copy mysql-connector-j-8.x.jar (from dev.mysql.com/downloads/connector/j) into this folder.
