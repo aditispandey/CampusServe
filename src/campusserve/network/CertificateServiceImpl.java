@@ -13,7 +13,7 @@ public class CertificateServiceImpl extends UnicastRemoteObject implements Certi
     @Override
     public String verify(String certificateCode) throws RemoteException {
         String sql = "SELECT u.Name, c.IssueDate, c.HoursThreshold FROM Certificate c " +
-                     "JOIN VolunteerProfile vp ON vp.VolunteerID = c.VolunteerID " +
+                     "JOIN VolunteerProfile vp ON vp.UserID = c.VolunteerUserID " +
                      "JOIN User u ON u.UserID = vp.UserID WHERE c.CertificateCode = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {

@@ -110,7 +110,7 @@ public class LoginFrame extends JFrame {
     @SuppressWarnings({"deprecation", "removal"})
     private void openNoticeBoard() {
         final NoticeApplet applet = new NoticeApplet();
-        final JFrame frame = new JFrame("Notice Board (Applet inside a Swing window)");
+        final JFrame frame = new JFrame("CampusServe Notice Board");
         frame.add(applet, BorderLayout.CENTER);
         frame.setSize(450, 230);
         frame.setLocationRelativeTo(this);

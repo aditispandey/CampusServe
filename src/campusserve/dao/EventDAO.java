@@ -10,7 +10,7 @@ public class EventDAO {
 
     public int getClubIdForCoordinator(int userId) throws SQLException {
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement("SELECT ClubID FROM Club WHERE CoordinatorID = ? LIMIT 1")) {
+             PreparedStatement ps = conn.prepareStatement("SELECT ClubID FROM Club WHERE CoordinatorUserID = ? LIMIT 1")) {
             ps.setInt(1, userId);
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next() ? rs.getInt(1) : -1;
@@ -34,7 +34,7 @@ public class EventDAO {
     // SELECT with PreparedStatement (has a ? parameter)
     public List<Object[]> getEventsByCoordinator(int userId) throws SQLException {
         String sql = "SELECT e.EventID, e.EventName, e.StartDate, e.EndDate, e.ApprovalStatus " +
-                     "FROM Event e JOIN Club c ON c.ClubID = e.ClubID WHERE c.CoordinatorID = ? ORDER BY e.EventID";
+                     "FROM Event e JOIN Club c ON c.ClubID = e.ClubID WHERE c.CoordinatorUserID = ? ORDER BY e.EventID";
         List<Object[]> rows = new ArrayList<>();
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {

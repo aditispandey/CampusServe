@@ -41,7 +41,7 @@ public class ShiftDAO {
     }
 
     public ArrayList<ShiftRole> getShiftsForCoordinator(int coordinatorUserId) throws SQLException {
-        String sql = SHIFT_SELECT + "JOIN Club c ON c.ClubID = e.ClubID WHERE c.CoordinatorID = ? ORDER BY s.ShiftID";
+        String sql = SHIFT_SELECT + "JOIN Club c ON c.ClubID = e.ClubID WHERE c.CoordinatorUserID = ? ORDER BY s.ShiftID";
         ArrayList<ShiftRole> list = new ArrayList<>();
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -66,7 +66,7 @@ public class ShiftDAO {
 
     public List<Object[]> getMyShifts(int volunteerId) throws SQLException {
         String sql = "SELECT sa.AssignmentID, s.RoleName, s.StartTime, sa.Status, sa.HoursLogged " +
-                     "FROM ShiftAssignment sa JOIN ShiftRole s ON s.ShiftID = sa.ShiftID WHERE sa.VolunteerID = ? ORDER BY s.StartTime";
+                     "FROM ShiftAssignment sa JOIN ShiftRole s ON s.ShiftID = sa.ShiftID WHERE sa.VolunteerUserID = ? ORDER BY s.StartTime";
         List<Object[]> rows = new ArrayList<>();
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -111,7 +111,7 @@ public class ShiftDAO {
 
             // 2. overlapping shift?
             String overlap = "SELECT COUNT(*) FROM ShiftAssignment sa JOIN ShiftRole sr ON sr.ShiftID = sa.ShiftID " +
-                             "WHERE sa.VolunteerID = ? AND sa.Status IN ('REGISTERED','COMPLETED') " +
+                             "WHERE sa.VolunteerUserID = ? AND sa.Status IN ('REGISTERED','COMPLETED') " +
                              "AND sr.StartTime < ? AND sr.EndTime > ?";
             try (PreparedStatement ps = conn.prepareStatement(overlap)) {
                 ps.setInt(1, volunteerId);
@@ -127,7 +127,7 @@ public class ShiftDAO {
 
             // 3. insert assignment, 4. increase slots filled
             try (PreparedStatement ps = conn.prepareStatement(
-                    "INSERT INTO ShiftAssignment (ShiftID, VolunteerID, Status) VALUES (?, ?, 'REGISTERED')")) {
+                    "INSERT INTO ShiftAssignment (ShiftID, VolunteerUserID, Status) VALUES (?, ?, 'REGISTERED')")) {
                 ps.setInt(1, shiftId);
                 ps.setInt(2, volunteerId);
                 ps.executeUpdate();
@@ -187,8 +187,8 @@ public class ShiftDAO {
                      "JOIN ShiftRole s ON s.ShiftID = sa.ShiftID " +
                      "JOIN Event e ON e.EventID = s.EventID " +
                      "JOIN Club c ON c.ClubID = e.ClubID " +
-                     "JOIN VolunteerProfile vp ON vp.VolunteerID = sa.VolunteerID " +
-                     "JOIN User u ON u.UserID = vp.UserID WHERE c.CoordinatorID = ? ORDER BY sa.AssignmentID";
+                     "JOIN VolunteerProfile vp ON vp.UserID = sa.VolunteerUserID " +
+                     "JOIN User u ON u.UserID = vp.UserID WHERE c.CoordinatorUserID = ? ORDER BY sa.AssignmentID";
         List<Object[]> rows = new ArrayList<>();
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -227,7 +227,7 @@ public class ShiftDAO {
 
     public double getTotalHours(int volunteerId) throws SQLException {
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement("SELECT TotalHoursServed FROM VolunteerProfile WHERE VolunteerID = ?")) {
+             PreparedStatement ps = conn.prepareStatement("SELECT TotalHoursServed FROM VolunteerProfile WHERE UserID = ?")) {
             ps.setInt(1, volunteerId);
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next() ? rs.getDouble(1) : 0;
@@ -238,7 +238,7 @@ public class ShiftDAO {
     public List<String> getCertificateCodes(int volunteerId) throws SQLException {
         List<String> codes = new ArrayList<>();
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement("SELECT CertificateCode FROM Certificate WHERE VolunteerID = ?")) {
+             PreparedStatement ps = conn.prepareStatement("SELECT CertificateCode FROM Certificate WHERE VolunteerUserID = ?")) {
             ps.setInt(1, volunteerId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) codes.add(rs.getString(1));

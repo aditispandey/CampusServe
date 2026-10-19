@@ -9,8 +9,8 @@ public class UserDAO {
 
     /** Returns the correct User child (Volunteer / Coordinator / Administrator) or null if login is wrong. */
     public User login(String email, String password) throws SQLException {
-        String sql = "SELECT u.UserID, u.Name, u.PasswordHash, u.Role, vp.VolunteerID, vp.TotalHoursServed " +
-                     "FROM User u LEFT JOIN VolunteerProfile vp ON vp.UserID = u.UserID WHERE u.Email = ?";
+        String sql = "SELECT u.UserID, u.Name, u.PasswordHash, u.Role, vp.UserID AS VolunteerID, vp.TotalHoursServed " +
+                     "FROM `User` u LEFT JOIN VolunteerProfile vp ON vp.UserID = u.UserID WHERE u.Email = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, email);

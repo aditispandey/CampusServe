@@ -8,12 +8,11 @@ import java.awt.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-/** APPLET (JApplet = Swing applet). Life cycle: init() -> start() -> stop() -> destroy(). Shows open shifts to everyone. */
+/** Swing JPanel notice board hosted in a regular JFrame. Shows open shifts to everyone. */
 @SuppressWarnings({"deprecation", "removal"})
-public class NoticeApplet extends JApplet {
+public class NoticeApplet extends JPanel {
     private final JTextArea board = new JTextArea();
 
-    @Override
     public void init() {
         setLayout(new BorderLayout());
         JLabel title = new JLabel("CampusServe Notice Board - Open Shifts", SwingConstants.CENTER);
@@ -26,13 +25,10 @@ public class NoticeApplet extends JApplet {
         add(reload, BorderLayout.SOUTH);
     }
 
-    @Override
     public void start() { loadShifts(); }
 
-    @Override
     public void stop() { System.out.println("NoticeApplet stop()"); }
 
-    @Override
     public void destroy() { System.out.println("NoticeApplet destroy()"); }
 
     private void loadShifts() {
