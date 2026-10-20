@@ -1,0 +1,17 @@
+<%@ page import="java.sql.*" %>
+<%!
+    // Shared helper methods (JSP "declaration"). Included in every page that needs the database.
+    // EDIT the username/password below.
+    Connection getConn() throws Exception {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        return DriverManager.getConnection(
+            "jdbc:mysql://localhost:3306/campusserve?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC",
+            "root", "your_password_here");
+    }
+
+    // Escapes < > & " so user text cannot inject HTML
+    String esc(String s) {
+        if (s == null) return "";
+        return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;");
+    }
+%>
