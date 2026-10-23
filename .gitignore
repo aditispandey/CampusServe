@@ -1,0 +1,13 @@
+out/
+
+reports/
+campusserve_log.txt
+sources.txt
+*.class
+
+lib/*.jar
+
+webapp/WEB-INF/lib/*.jar
+
+.DS_Store
+
